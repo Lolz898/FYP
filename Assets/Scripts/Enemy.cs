@@ -1,35 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
     public float startSpeed = 6f;
+    public float startHealth = 100;
     [HideInInspector]
     public float speed;
-    public float health = 100;
+    public float health;
     public int worth = 50;
 
     public GameObject deathEffect;
+    private bool isDead;
 
-    private bool enemyDeathOnce;
+    [Header("Unity Stuff")]
+    public Image healthBar;
 
     private void Start()
     {
         speed = startSpeed;
-        enemyDeathOnce = false;
+        health = startHealth;
+        isDead = false;
     }
 
     public void TakeDamage(float amount)
     {
         health -= amount;
 
-        if (health <= 0) 
+        healthBar.fillAmount = health / startHealth;
+
+        if (health <= 0 && !isDead) 
         {
-            if (!enemyDeathOnce)
-            {
-                Die();
-            }
+            Die();
         }
     }
 
@@ -40,11 +44,13 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
-        enemyDeathOnce = true;
+        isDead = true;
         PlayerStats.Money += worth;
 
         GameObject effect = (GameObject)Instantiate(deathEffect, transform.position, Quaternion.identity);
         Destroy(effect, 5f);
+
+        WaveSpawner.enemiesAlive--;
 
         Destroy(gameObject);
     }
