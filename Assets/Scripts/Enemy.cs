@@ -7,8 +7,13 @@ public class Enemy : MonoBehaviour
 {
     public float startSpeed = 6f;
     public float startHealth = 100;
+
+    // 0 = Node based, 1 = NavMesh based
+    public int pathingType = 0;
+
     [HideInInspector]
     public float speed;
+    [HideInInspector]
     public float health;
     public int worth = 50;
 
@@ -47,7 +52,7 @@ public class Enemy : MonoBehaviour
         isDead = true;
         PlayerStats.Money += worth;
 
-        GameObject effect = (GameObject)Instantiate(deathEffect, transform.position, Quaternion.identity);
+        GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
         Destroy(effect, 5f);
 
         WaveSpawner.enemiesAlive--;
