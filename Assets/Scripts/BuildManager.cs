@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation.Editor;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -12,6 +13,8 @@ public class BuildManager : MonoBehaviour
 
     public NodeUI nodeUI;
 
+    public List<GameObject> nodes;
+
     private TurretBlueprint turretToBuild;
     private Node selectedNode;
 
@@ -23,6 +26,8 @@ public class BuildManager : MonoBehaviour
             return;
         }
         instance = this;
+
+        nodes.AddRange(GameObject.FindGameObjectsWithTag("Nodes"));
     }
 
     public bool CanBuild
@@ -44,6 +49,11 @@ public class BuildManager : MonoBehaviour
             return;
         }
 
+        if (turretToBuild != null)
+        {
+            ToggleAllNodesColor();
+        }
+
         selectedNode = node;
         turretToBuild = null;
 
@@ -58,7 +68,20 @@ public class BuildManager : MonoBehaviour
 
     public void SelectTurretToBuild(TurretBlueprint turret)
     {
-        turretToBuild = turret;
+        if (turretToBuild == null)
+        {
+            turretToBuild = turret;
+            ToggleAllNodesColor();
+        }
+        else if (turret.prefab == turretToBuild.prefab)
+        {
+            turretToBuild = null;
+            ToggleAllNodesColor();
+        }
+        else
+        {
+            turretToBuild = turret;
+        }
 
         DeselectNode();
     }
@@ -66,5 +89,24 @@ public class BuildManager : MonoBehaviour
     public TurretBlueprint GetTurretToBuild()
     {
         return turretToBuild;
+    }
+
+    public void ClearTurretToBuild()
+    {
+        turretToBuild = null;
+
+        ToggleAllNodesColor();
+    }
+
+    public void ToggleAllNodesColor()
+    {
+        foreach (GameObject node in nodes)
+        {
+            Node nComponent = node.GetComponent<Node>();
+            if (nComponent != null)
+            {
+                nComponent.ToggleNodeColor();
+            }
+        }
     }
 }

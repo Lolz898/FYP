@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Shop : MonoBehaviour
 {
+    public TurretBlueprint wall;
     public TurretBlueprint standardTurret;
     public TurretBlueprint missileLauncher;
     public TurretBlueprint laserBeamer;
@@ -13,6 +14,12 @@ public class Shop : MonoBehaviour
     private void Start()
     {
         buildManager = BuildManager.instance;
+    }
+
+    public void SelectWall()
+    {
+        Debug.Log("Wall selected");
+        buildManager.SelectTurretToBuild(wall);
     }
 
     public void SelectStandardTurret()

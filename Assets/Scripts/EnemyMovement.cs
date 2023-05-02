@@ -9,7 +9,7 @@ public class EnemyMovement : MonoBehaviour
     private Transform target;
     private int waypointIndex = 0;
 
-    public GameObject endPoint;
+    private GameObject endPoint;
     public NavMeshAgent agent;
 
     private Enemy enemy;
@@ -17,6 +17,8 @@ public class EnemyMovement : MonoBehaviour
     void Start()
     {
         enemy = GetComponent<Enemy>();
+
+        endPoint = GameObject.Find("End Point");
 
         if (enemy.pathingType == 0)
         {

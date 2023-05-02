@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
@@ -8,8 +9,10 @@ public class Enemy : MonoBehaviour
     public float startSpeed = 6f;
     public float startHealth = 100;
 
+    [Header("NavMesh")]
     // 0 = Node based, 1 = NavMesh based
     public int pathingType = 0;
+    public NavMeshAgent agent;
 
     [HideInInspector]
     public float speed;
@@ -26,6 +29,10 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         speed = startSpeed;
+        if (pathingType == 1)
+        {
+            agent.speed = startSpeed;
+        }
         health = startHealth;
         isDead = false;
     }
@@ -44,7 +51,14 @@ public class Enemy : MonoBehaviour
 
     public void Slow(float amount)
     {
-        speed = startSpeed * (1f - amount); 
+        if (pathingType == 0)
+        {
+            speed = startSpeed * (1f - amount);
+        }
+        else if (pathingType == 1)
+        {
+            agent.speed = startSpeed * (1f - amount);
+        }
     }
 
     void Die()
