@@ -113,7 +113,7 @@ MonoBehaviour:
   hoverColor: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 1}
   nodeColor: {r: 1, g: 1, b: 1, a: 1}
   notEnoughMoneyColor: {r: 0.8396226, g: 0.21703447, b: 0.21703447, a: 1}
-  positionOffset: {x: 0, y: 0.5, z: 0}
+  positionOffset: {x: 0, y: 4.5, z: 0}
   turret: {fileID: 0}
   turretBlueprint:
     prefab: {fileID: 0}

@@ -4,21 +4,16 @@ using UnityEngine;
 
 public class Shop : MonoBehaviour
 {
-    public TurretBlueprint wall;
     public TurretBlueprint standardTurret;
     public TurretBlueprint missileLauncher;
     public TurretBlueprint laserBeamer;
+    public TurretBlueprint resTower;
+
     BuildManager buildManager;
 
     private void Start()
     {
         buildManager = BuildManager.instance;
-    }
-
-    public void SelectWall()
-    {
-        Debug.Log("Wall selected");
-        buildManager.SelectTurretToBuild(wall);
     }
 
     public void SelectStandardTurret()
@@ -37,5 +32,11 @@ public class Shop : MonoBehaviour
     {
         Debug.Log("Laser Beamer selected");
         buildManager.SelectTurretToBuild(laserBeamer);
+    }
+
+    public void SelectResurrectTower()
+    {
+        Debug.Log("Resurrect Tower selected");
+        buildManager.SelectTurretToBuild(resTower);
     }
 }

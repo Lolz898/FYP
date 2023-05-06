@@ -68,7 +68,7 @@ public class Node : MonoBehaviour
         }
 
         PlayerStats.Money -= blueprint.cost;
-        GameObject _turret = Instantiate(blueprint.prefab, GetBuildPosition(), Quaternion.identity);
+        GameObject _turret = Instantiate(blueprint.prefab, GetBuildPosition(), Quaternion.Euler(35f, 0f, 0f));
         turret = _turret;
 
         turretBlueprint = blueprint;
