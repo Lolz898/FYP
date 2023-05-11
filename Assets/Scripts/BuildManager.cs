@@ -35,9 +35,9 @@ public class BuildManager : MonoBehaviour
         get { return turretToBuild != null; }
     }
 
-    public bool HasMoney
+    public bool HasFlesh
     {
-        get { return PlayerStats.Money >= turretToBuild.cost; }
+        get { return PlayerStats.Flesh >= turretToBuild.cost; }
     }
 
 

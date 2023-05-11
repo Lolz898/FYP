@@ -6,15 +6,25 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
+    [Header("Statistics")]
     public float startSpeed = 6f;
     public float startHealth = 100;
+    public float sightRange = 5f;
+    public float attackRange = 2f;
+    public float attackCooldown = 0.5f;
+    public float attackDamage = 10f;
+    public float lifeTimer = 0f;
+
+    [HideInInspector]
+    public float lastAttackTime;
 
     [Header("NavMesh")]
     // 0 = Node based, 1 = NavMesh based
     public int pathingType = 0;
     public NavMeshAgent agent;
+    public bool isAlly = false;
 
-    [HideInInspector]
+    //[HideInInspector]
     public float speed;
     [HideInInspector]
     public float health;
@@ -35,11 +45,45 @@ public class Enemy : MonoBehaviour
         }
         health = startHealth;
         isDead = false;
+
+        if (lifeTimer > 0f)
+        {
+            StartCoroutine(LifeTimer());
+        }
+    }
+
+    private void Update()
+    {
+        if (pathingType == 1)
+        {
+            agent.speed = speed;
+        }
+        Debug.Log(speed);
+    }
+
+    private IEnumerator LifeTimer()
+    {
+        yield return new WaitForSeconds(lifeTimer);
+        if (!isDead)
+        {
+            Die();
+        }
     }
 
     public void TakeDamage(float amount)
     {
-        health -= amount;
+        // Apply inDamageReduction from all active UnitModifier components
+        float damageReductionModifier = 1.0f;
+        UnitModifier[] activeModifiers = GetComponentsInChildren<UnitModifier>();
+        foreach (UnitModifier modifier in activeModifiers)
+        {
+            damageReductionModifier *= (1.0f - modifier.inDamageReduction);
+        }
+
+        // Apply damage with the reduced damage amount
+        float actualDamageAmount = amount * damageReductionModifier;
+
+        health -= actualDamageAmount;
 
         healthBar.fillAmount = health / startHealth;
 
@@ -49,27 +93,23 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void Slow(float amount)
+    public void ApplyModifier(UnitModifier _modifier)
     {
-        if (pathingType == 0)
-        {
-            speed = startSpeed * (1f - amount);
-        }
-        else if (pathingType == 1)
-        {
-            agent.speed = startSpeed * (1f - amount);
-        }
+        UnitModifier modifier = Instantiate(_modifier, transform);
     }
 
     void Die()
     {
         isDead = true;
-        PlayerStats.Money += worth;
+        PlayerStats.Flesh += worth;
 
         GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
         Destroy(effect, 5f);
 
-        WaveSpawner.enemiesAlive--;
+        if (!isAlly)
+        {
+            WaveSpawner.enemiesAlive--;
+        }
 
         Destroy(gameObject);
     }

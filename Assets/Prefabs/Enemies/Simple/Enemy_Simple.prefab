@@ -64,8 +64,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startSpeed: 6
   startHealth: 100
+  sightRange: 5
+  attackRange: 2
+  attackCooldown: 0.5
+  attackDamage: 10
+  lifeTimer: 0
+  lastAttackTime: 0
   pathingType: 0
   agent: {fileID: 0}
+  isAlly: 0
   speed: 10
   health: 100
   worth: 50
@@ -125,7 +132,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: bce31089854873245a9ca7ff099afd06, type: 3}
+  m_Sprite: {fileID: 125064801, guid: 200b3a8a249ba8b4b884f95d195f3623, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -148,7 +155,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1516bbe14a8c594ebac94075f803db3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemySprites:
+  - {fileID: 125064801, guid: 200b3a8a249ba8b4b884f95d195f3623, type: 3}
+  - {fileID: 326013676, guid: 200b3a8a249ba8b4b884f95d195f3623, type: 3}
   spriteRenderer: {fileID: 0}
+  animationSpeed: 0.15
 --- !u!1 &4285685696099661465
 GameObject:
   m_ObjectHideFlags: 0

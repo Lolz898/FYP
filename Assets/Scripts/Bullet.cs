@@ -10,6 +10,12 @@ public class Bullet : MonoBehaviour
     public int damage = 50;
     public float explosionRadius = 0f;
     public GameObject impactEffect;
+    public Turret parentTurret;
+
+    public void Start()
+    {
+        parentTurret = GetComponentInParent<Turret>();
+    }
 
     public void Seek(Transform _target)
     {
@@ -71,6 +77,8 @@ public class Bullet : MonoBehaviour
         Enemy e = enemy.GetComponent<Enemy>();
 
         if (e != null) { e.TakeDamage(damage); }
+
+        parentTurret.ApplyAllModifiers(e);
     }
 
     private void OnDrawGizmosSelected()

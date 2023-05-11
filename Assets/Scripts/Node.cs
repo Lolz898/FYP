@@ -10,7 +10,7 @@ public class Node : MonoBehaviour
 {
     public Color hoverColor;
     public Color nodeColor;
-    public Color notEnoughMoneyColor;
+    public Color notEnoughFleshColor;
     public Vector3 positionOffset;
 
     [HideInInspector]
@@ -61,13 +61,13 @@ public class Node : MonoBehaviour
 
     void BuildTurret(TurretBlueprint blueprint)
     {
-        if (PlayerStats.Money < blueprint.cost)
+        if (PlayerStats.Flesh < blueprint.cost)
         {
-            Debug.Log("Not enough money");
+            Debug.Log("Not enough flesh");
             return;
         }
 
-        PlayerStats.Money -= blueprint.cost;
+        PlayerStats.Flesh -= blueprint.cost;
         GameObject _turret = Instantiate(blueprint.prefab, GetBuildPosition(), Quaternion.Euler(35f, 0f, 0f));
         turret = _turret;
 
@@ -84,13 +84,13 @@ public class Node : MonoBehaviour
 
     public void UpgradeTurret()
     {
-        if (PlayerStats.Money < turretBlueprint.upgradeCost)
+        if (PlayerStats.Flesh < turretBlueprint.upgradeCost)
         {
-            Debug.Log("Not enough money");
+            Debug.Log("Not enough flesh");
             return;
         }
 
-        PlayerStats.Money -= turretBlueprint.upgradeCost;
+        PlayerStats.Flesh -= turretBlueprint.upgradeCost;
 
         // Destroy old turret
         Destroy(turret);
@@ -108,7 +108,7 @@ public class Node : MonoBehaviour
 
     public void SellTurret()
     {
-        PlayerStats.Money += turretBlueprint.GetSellAmount();
+        PlayerStats.Flesh += turretBlueprint.GetSellAmount();
 
         GameObject effect = Instantiate(buildManager.sellEffect, GetBuildPosition(), Quaternion.identity);
         Destroy(effect, 5f);
@@ -153,13 +153,13 @@ public class Node : MonoBehaviour
             return;
         }
 
-        if (buildManager.HasMoney)
+        if (buildManager.HasFlesh)
         {
             rend.material.color = hoverColor;
         }
         else
         {
-            rend.material.color = notEnoughMoneyColor;
+            rend.material.color = notEnoughFleshColor;
         }
     }
 

@@ -46,6 +46,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 15
+  towerSprites:
+  - {fileID: 1550067911, guid: de616439ed16b294899a4626ed61acc7, type: 3}
+  - {fileID: -3789925, guid: de616439ed16b294899a4626ed61acc7, type: 3}
+  spriteRenderer: {fileID: 0}
+  animationSpeed: 0.2
+  useBullets: 0
   fireRate: 1
   bulletPrefab: {fileID: 860258877581368060, guid: 81bf18ffe1501b2469c0c15930cff605, type: 3}
   useLaser: 0
@@ -54,6 +60,10 @@ MonoBehaviour:
   lineRenderer: {fileID: 0}
   impactEffect: {fileID: 0}
   impactLight: {fileID: 0}
+  useResZombie: 1
+  canSpawn: 1
+  spawnRate: 3
+  zombiePrefab: {fileID: 7245260779582766731, guid: 1f2f5b384618ef3488f387ece3d7ea01, type: 3}
   turnSpeed: 10
   enemyTag: Enemy
   partToRotate: {fileID: 0}

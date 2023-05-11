@@ -92,8 +92,8 @@ GameObject:
   - component: {fileID: 3513009816331908266}
   - component: {fileID: 5085199305039093777}
   m_Layer: 0
-  m_Name: Enemy_Smart
-  m_TagString: Enemy
+  m_Name: Zombie
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -139,21 +139,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d985146f14040b49a78f8e611921209, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startSpeed: 6
+  startSpeed: 7
   startHealth: 100
   sightRange: 5
-  attackRange: 1
+  attackRange: 2
   attackCooldown: 1
   attackDamage: 10
-  lifeTimer: 0
+  lifeTimer: 7
   lastAttackTime: 0
   pathingType: 1
   agent: {fileID: -4365691095950109992}
-  isAlly: 0
+  isAlly: 1
   speed: 10
   health: 100
-  worth: 50
-  deathEffect: {fileID: 2297441325592293376, guid: 9841da343f296dc418f6793e8a7996b0, type: 3}
+  worth: 5
+  deathEffect: {fileID: 2297441325592293376, guid: 22a1e943bf9b90e458c61c149437b836, type: 3}
   healthBar: {fileID: 4197324264014432999}
 --- !u!114 &2240179434701349711
 MonoBehaviour:
@@ -179,7 +179,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.3
   m_Speed: 3.5
-  m_Acceleration: 16
+  m_Acceleration: 40
   avoidancePriority: 50
   m_AngularSpeed: 180
   m_StoppingDistance: 0
@@ -231,7 +231,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1182743915, guid: 481e57df1ff0c754caeaab322db20fb2, type: 3}
+  m_Sprite: {fileID: 773197525, guid: 6da279f163ea95f4da601c51550af6d6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -255,10 +255,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemySprites:
-  - {fileID: 1182743915, guid: 481e57df1ff0c754caeaab322db20fb2, type: 3}
-  - {fileID: -2144399098, guid: 481e57df1ff0c754caeaab322db20fb2, type: 3}
+  - {fileID: 773197525, guid: 6da279f163ea95f4da601c51550af6d6, type: 3}
+  - {fileID: -443155762, guid: 6da279f163ea95f4da601c51550af6d6, type: 3}
+  - {fileID: -863648283, guid: 6da279f163ea95f4da601c51550af6d6, type: 3}
   spriteRenderer: {fileID: 0}
-  animationSpeed: 0.15
+  animationSpeed: 0.25
 --- !u!1 &8237866007263924963
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,7 +351,7 @@ GameObject:
   - component: {fileID: 3608083348242053727}
   - component: {fileID: 8467772651419418108}
   m_Layer: 5
-  m_Name: EnemyBar
+  m_Name: AlliedBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
