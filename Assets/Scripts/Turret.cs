@@ -35,15 +35,40 @@ public class Turret : MonoBehaviour
     public GameObject zombiePrefab;
     private bool spawning = false;
 
+    [Header("Create Flesh Golem")]
+    public bool useFleshGolem = false;
+    public bool canSpawnFGolem = true;
+    public GameObject fleshGolemPrefab;
+    public bool consuming = false;
+    public int allyAmount = 0;
+
+    [Header("Tower AoE")]
+    public string targetTag;
+    public bool useTowerAoE = false;
+    public int AoEDamage = 5;
+    public float AoERate = 0f;
+    public int soulCost = 0;
+    private bool AoEActive = false;
+
     [Header("All Modifier Prefabs")]
     public bool useNormalSlow = false;
     public UnitModifier normalSlow;
-    public bool useNormalPoison = false;
-    public UnitModifier normalPoison;
+    public bool useWeakFire = false;
+    public UnitModifier weakFire;
+    public bool useSoulMark = false;
+    public UnitModifier soulMark;
+    public bool useZombiePlague = false;
+    public UnitModifier zombiePlague;
+    public bool useAttackSpeedUp = false;
+    public UnitModifier attackSpeedUp;
+    public bool useResistanceDown = false;
+    public UnitModifier resistanceDown;
 
     [Header("Unity Setup Fields")]
-    public float turnSpeed = 10f;
     public string enemyTag = "Enemy";
+    public AudioSource audioSource;
+    public AudioClip projAttackSound;
+    public AudioClip aoeAttackSound;
 
     private Transform target;
     private Enemy targetEnemy;
@@ -53,6 +78,7 @@ public class Turret : MonoBehaviour
     {
         InvokeRepeating("UpdateTarget", 0f, 0.5f);
         spriteRenderer = GetComponent<SpriteRenderer>();
+        audioSource = GetComponent<AudioSource>();
     }
     void UpdateTarget()
     {
@@ -111,22 +137,45 @@ public class Turret : MonoBehaviour
         {
             Laser();
         }
-        else if (useBullets)
+        
+        if (useBullets)
         {
             if (fireCountdown <= 0f)
             {
-                Shoot();
-                fireCountdown = 1f / fireRate;
+                if (target != null) 
+                {
+                    Shoot();
+                    fireCountdown = 1f / fireRate;
+                }
             }
 
             fireCountdown -= Time.deltaTime;
         }
-        else if (useResZombie)
+        
+        if (useResZombie)
         {
             if (!spawning)
             {
                 spawning = true;
                 StartCoroutine(SpawnZombie());
+            }
+        }
+
+        if (useFleshGolem)
+        {
+            if (!consuming)
+            {
+                consuming = true;
+                StartCoroutine(SpawnFleshGolem());
+            }
+        }
+
+        if (useTowerAoE)
+        {
+            if (!AoEActive)
+            {
+                AoEActive = true;
+                StartCoroutine(towerAoE());
             }
         }
     }
@@ -135,30 +184,73 @@ public class Turret : MonoBehaviour
     {
         while (canSpawn)
         {
-            GameObject nearestGround = null;
-            float nearestDistance = Mathf.Infinity;
-
-            Collider[] colliders = Physics.OverlapSphere(transform.position, range);
-            
-            foreach (Collider collider in colliders)
+            if (PlayerStats.Flesh > 15)
             {
-                if (collider.CompareTag("Ground"))
-                {
-                    float distance = Vector3.Distance(transform.position, collider.transform.position);
-                    if (distance < nearestDistance)
-                    {
-                        nearestDistance = distance;
-                        nearestGround = collider.gameObject;
-                    }
-                }
-            }
-
-            if (nearestGround != null)
-            {
-                Instantiate(zombiePrefab, nearestGround.transform.position, Quaternion.identity);
+                PlayerStats.Flesh -= 15;
+                Instantiate(zombiePrefab, transform.position, Quaternion.identity);
             }
 
             yield return new WaitForSeconds(spawnRate);
+        }
+    }
+
+    IEnumerator SpawnFleshGolem()
+    {
+        while (canSpawnFGolem)
+        {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, range);
+
+            foreach (Collider collider in colliders)
+            {
+                Enemy unit = collider.GetComponent<Enemy>();
+                if (unit != null && unit.isZombie)
+                {
+                    unit.TakeDamage(unit.health);
+                    allyAmount++;
+                }
+            }
+
+            if (allyAmount >= 5)
+            {
+                Instantiate(fleshGolemPrefab, transform.position, Quaternion.identity);
+                allyAmount = 0;
+            }
+
+            yield return null;
+        }
+    }
+
+    IEnumerator towerAoE()
+    {
+        while (true)
+        {
+            if (PlayerStats.Souls > soulCost)
+            {
+                yield return new WaitForSeconds(AoERate);
+                
+                audioSource.PlayOneShot(aoeAttackSound, 0.6f);
+
+                PlayerStats.Souls -= soulCost;
+
+                Collider[] colliders = Physics.OverlapSphere(transform.position, range);
+
+                List<Enemy> targets = new List<Enemy>();
+
+                foreach (Collider collider in colliders)
+                {
+                    Enemy unit = collider.GetComponent<Enemy>();
+                    if (unit != null && unit.CompareTag(targetTag))
+                    {
+                        targets.Add(unit);
+                    }
+                }
+
+                foreach (Enemy target in targets)
+                {
+                    ApplyAllModifiers(target);
+                    target.TakeDamage(AoEDamage);;
+                }
+            }
         }
     }
 
@@ -189,6 +281,12 @@ public class Turret : MonoBehaviour
         GameObject bulletGO = Instantiate(bulletPrefab, transform.position, transform.rotation, transform);
         Bullet bullet = bulletGO.GetComponent<Bullet>();
 
+        if (projAttackSound != null)
+        {
+            audioSource.pitch = Random.Range(0.9f, 1.1f);
+            audioSource.PlayOneShot(projAttackSound, 0.6f);
+        }
+
         if (bullet != null)
         {
             bullet.Seek(target);
@@ -197,14 +295,34 @@ public class Turret : MonoBehaviour
 
     public void ApplyAllModifiers(Enemy enemy)
     {
-        if (useNormalPoison)
-        {
-            enemy.ApplyModifier(normalPoison);
-        }
-
         if (useNormalSlow)
         {
             enemy.ApplyModifier(normalSlow);
+        }
+        
+        if (useWeakFire)
+        {
+            enemy.ApplyModifier(weakFire);
+        }
+
+        if (useSoulMark)
+        {
+            enemy.ApplyModifier(soulMark);
+        }
+
+        if (useZombiePlague)
+        {
+            enemy.ApplyModifier(zombiePlague);
+        }
+
+        if (useAttackSpeedUp)
+        {
+            enemy.ApplyModifier(attackSpeedUp);
+        }
+
+        if (useResistanceDown)
+        {
+            enemy.ApplyModifier(resistanceDown);
         }
     }
 

@@ -8,7 +8,7 @@ public class WallNode : MonoBehaviour
 {
     public Color hoverColor;
     public Color nodeColor;
-    public Color notEnoughFleshColor;
+    public Color notEnoughResourcesColor;
     public Vector3 positionOffset;
 
     private Renderer rend;
@@ -56,17 +56,17 @@ public class WallNode : MonoBehaviour
 
     public void BuildWall()
     {
-        if (PlayerStats.Flesh < wallCost)
+        if (PlayerStats.Bones < wallCost)
         {
-            Debug.Log("Not enough flesh");
+            Debug.Log("Not enough bones");
             return;
         }
 
-        PlayerStats.Flesh -= wallCost;
-        GameObject _wall = Instantiate(wallPrefab, GetBuildPosition(), Quaternion.identity);
+        PlayerStats.Bones -= wallCost;
+        GameObject _wall = Instantiate(wallPrefab, transform.position + Vector3.up, Quaternion.identity);
         _wall.transform.SetParent(t);
 
-        GameObject effect = Instantiate(buildManager.buildEffect, GetBuildPosition(), Quaternion.identity);
+        GameObject effect = Instantiate(buildManager.buildEffect, transform.position + Vector3.up, Quaternion.identity);
         Destroy(effect, 5f);
 
         wallNode = _wall.GetComponentInChildren<Node>().gameObject;
@@ -81,13 +81,13 @@ public class WallNode : MonoBehaviour
             return;
         }
 
-        if (PlayerStats.Flesh > wallCost)
+        if (PlayerStats.Bones > wallCost)
         {
             rend.material.color = hoverColor;
         }
         else
         {
-            rend.material.color = notEnoughFleshColor;
+            rend.material.color = notEnoughResourcesColor;
         }
     }
 

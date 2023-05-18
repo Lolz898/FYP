@@ -56,14 +56,22 @@ public class WaveSpawner : MonoBehaviour
 
         Wave wave = waves[waveIndex];
 
-        enemiesAlive = wave.count;
-
-        for (int i = 0; i < wave.count; i++)
+        int totalEnemies = 0;
+        for (int z = 0; z < wave.enemies.Length; z++)
         {
-            SpawnEnemy(wave.enemy);
-            yield return new WaitForSeconds(1f / wave.rate);
+            totalEnemies += wave.enemies[z].count;
         }
 
+        enemiesAlive = totalEnemies;
+
+        for (int z = 0; z < wave.enemies.Length; z++)
+        {
+            for (int i = 0; i < wave.enemies[z].count; i++)
+            {
+                SpawnEnemy(wave.enemies[z].enemy);
+                yield return new WaitForSeconds(1f / wave.spawnRate);
+            }
+        }
         waveIndex++;
     }
 

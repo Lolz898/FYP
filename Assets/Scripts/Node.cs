@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -10,7 +9,7 @@ public class Node : MonoBehaviour
 {
     public Color hoverColor;
     public Color nodeColor;
-    public Color notEnoughFleshColor;
+    public Color notEnoughResourcesColor;
     public Vector3 positionOffset;
 
     [HideInInspector]
@@ -61,14 +60,28 @@ public class Node : MonoBehaviour
 
     void BuildTurret(TurretBlueprint blueprint)
     {
-        if (PlayerStats.Flesh < blueprint.cost)
+        if (PlayerStats.Flesh < blueprint.fCost)
         {
             Debug.Log("Not enough flesh");
             return;
         }
 
-        PlayerStats.Flesh -= blueprint.cost;
-        GameObject _turret = Instantiate(blueprint.prefab, GetBuildPosition(), Quaternion.Euler(35f, 0f, 0f));
+        if (PlayerStats.Bones < blueprint.bCost)
+        {
+            Debug.Log("Not enough bones");
+            return;
+        }
+
+        if (PlayerStats.Souls < blueprint.sCost)
+        {
+            Debug.Log("Not enough souls");
+            return;
+        }
+
+        PlayerStats.Flesh -= blueprint.fCost;
+        PlayerStats.Bones -= blueprint.bCost;
+        PlayerStats.Souls -= blueprint.sCost;
+        GameObject _turret = Instantiate(blueprint.prefab, GetBuildPosition(), Quaternion.Euler(45f, 0f, 0f));
         turret = _turret;
 
         turretBlueprint = blueprint;
@@ -108,7 +121,9 @@ public class Node : MonoBehaviour
 
     public void SellTurret()
     {
-        PlayerStats.Flesh += turretBlueprint.GetSellAmount();
+        PlayerStats.Flesh += turretBlueprint.GetFleshSellAmount();
+        PlayerStats.Bones += turretBlueprint.GetBonesSellAmount();
+        PlayerStats.Souls += turretBlueprint.GetSoulsSellAmount();
 
         GameObject effect = Instantiate(buildManager.sellEffect, GetBuildPosition(), Quaternion.identity);
         Destroy(effect, 5f);
@@ -153,13 +168,13 @@ public class Node : MonoBehaviour
             return;
         }
 
-        if (buildManager.HasFlesh)
+        if (buildManager.HasResources)
         {
             rend.material.color = hoverColor;
         }
         else
         {
-            rend.material.color = notEnoughFleshColor;
+            rend.material.color = notEnoughResourcesColor;
         }
     }
 

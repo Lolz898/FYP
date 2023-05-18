@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class Shop : MonoBehaviour
 {
-    public TurretBlueprint standardTurret;
-    public TurretBlueprint missileLauncher;
-    public TurretBlueprint laserBeamer;
+    [Header("Constructs Type")]
     public TurretBlueprint resTower;
+    public TurretBlueprint fleshGolem;
+    public TurretBlueprint plagueSpreader;
+    [Header("Bone Legion Type")]
+    public TurretBlueprint skeletonArcherTower;
+    public TurretBlueprint lichTower;
+    public TurretBlueprint boneRattlingGunTower;
+    [Header("Tortured Cult Type")]
+    public TurretBlueprint ghostMageTower;
+    public TurretBlueprint totemTower;
+    public TurretBlueprint witchCoven;
 
     BuildManager buildManager;
 
@@ -16,27 +24,60 @@ public class Shop : MonoBehaviour
         buildManager = BuildManager.instance;
     }
 
-    public void SelectStandardTurret()
-    {
-        Debug.Log("Standard turret selected");
-        buildManager.SelectTurretToBuild(standardTurret);
-    }
-
-    public void SelectMissileLauncher()
-    {   
-        Debug.Log("Missile Launcher selected");
-        buildManager.SelectTurretToBuild(missileLauncher);
-    }
-
-    public void SelectLaserBeamer()
-    {
-        Debug.Log("Laser Beamer selected");
-        buildManager.SelectTurretToBuild(laserBeamer);
-    }
-
+    // Put all construct functions here
     public void SelectResurrectTower()
     {
         Debug.Log("Resurrect Tower selected");
         buildManager.SelectTurretToBuild(resTower);
+    }
+
+    public void SelectFleshGolem()
+    {
+        Debug.Log("Flesh Golem selected");
+        buildManager.SelectTurretToBuild(fleshGolem);
+    }
+
+    public void SelectPlagueSpreader()
+    {
+        Debug.Log("Plague Spreader selected");
+        buildManager.SelectTurretToBuild(plagueSpreader);
+    }
+
+    // Put all bone legion functions here
+    public void SelectSkeletonArcherTower()
+    {
+        Debug.Log("Skeleton Archer Tower selected");
+        buildManager.SelectTurretToBuild(skeletonArcherTower);
+    }
+
+    public void SelectLichTower()
+    {
+        Debug.Log("Lich Tower selected");
+        buildManager.SelectTurretToBuild(lichTower);
+    }
+
+    public void SelectBoneRattlingGun()
+    {
+        Debug.Log("Bone Rattling Gun selected");
+        buildManager.SelectTurretToBuild(boneRattlingGunTower);
+    }
+
+    // Put all tortured cult functions here
+    public void SelectGhostMageTower()
+    {
+        Debug.Log("Resurrect Tower selected");
+        buildManager.SelectTurretToBuild(ghostMageTower);
+    }
+
+    public void SelectTotemTower()
+    {
+        Debug.Log("Totem Tower selected");
+        buildManager.SelectTurretToBuild(totemTower);
+    }
+
+    public void SelectWitchCoven()
+    {
+        Debug.Log("Resurrect Tower selected");
+        buildManager.SelectTurretToBuild(witchCoven);
     }
 }

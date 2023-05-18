@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.AI.Navigation.Editor;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -22,7 +21,6 @@ public class BuildManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogError("More than 1 BuildManager in scene.");
             return;
         }
         instance = this;
@@ -37,9 +35,21 @@ public class BuildManager : MonoBehaviour
 
     public bool HasFlesh
     {
-        get { return PlayerStats.Flesh >= turretToBuild.cost; }
+        get { return PlayerStats.Flesh >= turretToBuild.fCost; }
+    }
+    public bool HasBones
+    {
+        get { return PlayerStats.Bones >= turretToBuild.bCost; }
+    }
+    public bool HasSouls
+    {
+        get { return PlayerStats.Souls >= turretToBuild.sCost; }
     }
 
+    public bool HasResources
+    {
+        get { return (PlayerStats.Flesh >= turretToBuild.fCost && PlayerStats.Bones >= turretToBuild.bCost && PlayerStats.Souls >= turretToBuild.sCost); }
+    }
 
     public void SelectNode(Node node)
     {

@@ -23,21 +23,43 @@ public class Enemy : MonoBehaviour
     public int pathingType = 0;
     public NavMeshAgent agent;
     public bool isAlly = false;
+    public bool fightPlayerUnits = false;
 
-    //[HideInInspector]
+    [HideInInspector]
     public float speed;
     [HideInInspector]
     public float health;
-    public int worth = 50;
+    public int fWorth = 50;
+    public int bWorth = 0;
+    public int sWorth = 0;
 
     public GameObject deathEffect;
     private bool isDead;
 
-    [Header("Unity Stuff")]
+    public bool isZombie;
+
+    public bool spawnUnitsOnDeath;
+    public GameObject unitToSpawn;
+    public int unitToSpawnAmount;
+
+    [Header("Unity Setup")]
     public Image healthBar;
+    [HideInInspector]
+    public AudioSource audioSource;
+    public AudioClip spawnSound;
+    public AudioClip attackSound;
+    public AudioClip deathSound;
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
+        if (spawnSound != null)
+        {
+            audioSource.pitch = Random.Range(0.9f, 1.1f);
+            audioSource.PlayOneShot(spawnSound, 0.4f);
+        }
+
         speed = startSpeed;
         if (pathingType == 1)
         {
@@ -58,7 +80,6 @@ public class Enemy : MonoBehaviour
         {
             agent.speed = speed;
         }
-        Debug.Log(speed);
     }
 
     private IEnumerator LifeTimer()
@@ -101,14 +122,38 @@ public class Enemy : MonoBehaviour
     void Die()
     {
         isDead = true;
-        PlayerStats.Flesh += worth;
+        PlayerStats.Flesh += fWorth;
+        PlayerStats.Bones += bWorth;
+        PlayerStats.Souls += sWorth;
 
         GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
-        Destroy(effect, 5f);
+        Destroy(effect, 3f);
+
+        if (deathSound != null)
+        {
+            GameObject audioObject = new GameObject("DeathSoundObject"); // Create a new GameObject
+            AudioSource _audioSource = audioObject.AddComponent<AudioSource>(); // Add an AudioSource component
+            _audioSource.spatialBlend = 1f; // Set spatial blend to 3D
+            _audioSource.playOnAwake = false; // Disable play on awake
+
+            _audioSource.pitch = Random.Range(0.9f, 1.1f);
+            _audioSource.PlayOneShot(deathSound, 0.6f);
+
+            // Destroy the audio object after the clip has finished playing
+            Destroy(audioObject, deathSound.length + 0.3f);
+        }
 
         if (!isAlly)
         {
             WaveSpawner.enemiesAlive--;
+        }
+
+        if (spawnUnitsOnDeath)
+        {
+            for (int i = 0; i < unitToSpawnAmount; i++)
+            {
+                Instantiate(unitToSpawn, transform.position, Quaternion.identity);
+            }
         }
 
         Destroy(gameObject);
